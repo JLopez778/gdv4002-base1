@@ -1,4 +1,5 @@
 #include "Engine.h"
+#include <numbers>
 
 // Function prototypes
 
@@ -19,6 +20,18 @@ int main(void) {
 	// Setup game scene objects here
 	//
 	
+	const float pi = 3.141593;
+	addObject("player1");
+	addObject("Player2");
+
+
+	GameObject2D* player1Object = getObject("player1");
+
+	if (player1Object != nullptr) {
+		player1Object->position = glm::vec2(-0.1f, 1.0f);
+	}
+
+
 
 	// Enter main loop - this handles update and render calls
 	engineMainLoop();
