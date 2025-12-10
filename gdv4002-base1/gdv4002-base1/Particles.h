@@ -1,0 +1,20 @@
+#pragma once
+#include "GameObject2D.h";
+class particles : public GameObject2D {
+private:
+
+	float mass;
+	glm::vec2 velocity;
+
+	float angleChangePerSecond;
+
+public:
+	particles(glm::vec2 initPosition, float initOrientation, glm::vec2 initSize, GLuint initTextureID, float mass, float angleChangePerSecond);
+
+	void update(double tDelta) override;
+
+};
+
+
+
+

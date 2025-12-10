@@ -2,6 +2,7 @@
 #include <numbers>
 #include "keys.h"
 #include "player.h"
+#include "asteroid.h"
 
 // Function prototypes
 void myUpdate(GLFWwindow* window, double tDelta);
@@ -12,6 +13,8 @@ using namespace std;
 GameObject2D* player1;
 
 bitset<5> keys{ 0x0 };
+
+glm::vec2 gravity = glm::vec2(0.0f, -1.0f);
 
 int main(void) {
 
@@ -30,26 +33,32 @@ int main(void) {
 	//
 
 	const float pi = 3.141593;
-	
+
 	addObject("asteroid");
 	addObject("asteroid");
 	addObject("asteroid");
 	float playerVelocity = 2.0f;
 	GLuint playerTexture = loadTexture("Resources\\Textures\\player1_ship.png");
 
-	player* mainPlayer = new player(glm::vec2(-1.5f, 0.0f), 0.0f, glm::vec2(0.5f, 0.5f), playerTexture, 1.0f);
+	player* Player = new player(glm::vec2(-1.5f, 0.0f), 0.0f, glm::vec2(0.5f, 0.5f), playerTexture, 1.0f);
 
-	addObject("player", mainPlayer);
-
-
-	GLuint asteroidTexture = loadTexture("Resources\\Textures\\alien01.png");
+	addObject("player", Player);
 
 
-	player1 = getObject("player1");
-	GameObject2D* asteroid1Object = getObject("asteroid1");
+	GLuint asteroidTexture = loadTexture("Resources\\Textures\\asteroid.png");
 
-	
-	
+	asteroid* asteroid1 = new asteroid(glm::vec2(0.0f, 0.0f), 0.0f, glm::vec2(0.5f, 0.5f), asteroidTexture, 0.0f, glm::radians(45.0f));
+	asteroid* asteroid2 = new asteroid(glm::vec2(0.0f, 0.0f), 0.0f, glm::vec2(0.5f, 0.5f), asteroidTexture, 0.0f, glm::radians(60.0f));
+	asteroid* asteroid3 = new asteroid(glm::vec2(0.0f, 0.0f), 0.0f, glm::vec2(0.5f, 0.5f), asteroidTexture, 0.0f, glm::radians(90.0f));
+
+	addObject("asteroid1", asteroid1);
+	addObject("asteroid2", asteroid2);
+	addObject("asteroid3", asteroid3);
+	player1 = getObject("player");
+
+
+
+
 
 	setUpdateFunction(myUpdate);
 	setKeyboardHandler(key_callback);
@@ -78,26 +87,6 @@ void myUpdate(GLFWwindow* window, double tDelta) {
 
 	GameObject2D* player = getObject("player1");
 
-	if (keys.test(key::W) == true) {
-
-		player->position.y += playerSpeed * (float)tDelta;
-	}
-
-	if (keys.test(key::A) == true) {
-
-		player->position.x -= playerSpeed * (float)tDelta;
-	}
-
-	if (keys.test(key::S) == true) {
-
-		player->position.x += playerSpeed * (float)tDelta;
-	}
-
-	if (keys.test(key::D) == true) {
-
-		player->position.y -= playerSpeed * (float)tDelta;
-	}
-
 
 
 
@@ -112,57 +101,18 @@ void myUpdate(GLFWwindow* window, double tDelta) {
 
 }
 
-void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
 
-	if (action == GLFW_PRESS) {
-		switch (key) {
-		case GLFW_KEY_ESCAPE:
-			glfwSetWindowShouldClose(window, true);
-			break;
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
 
-		case GLFW_KEY_W:
-			keys[key::W] = true;
-			break;
+}
 
-		case GLFW_KEY_A:
-			keys[key::A] = true;
-			break;
 
-		case GLFW_KEY_S:
-			keys[key::S] = true;
-			break;
 
-		case GLFW_KEY_D:
-			keys[key::D] = true;
-		}
-	}
 
-	else if (action == GLFW_RELEASE){
-			switch (key) {
-			case GLFW_KEY_A:
-				keys[key::A] = false;
-			case GLFW_KEY_W:
-				keys[key::W] = false;
-				break;
 
-			case GLFW_KEY_S:
-				keys[key::S] = false;
-				break;
 
-			case GLFW_KEY_D:
-				keys[key::D] = false;
-				break;
 
-			}
-
-		
-			}
-		
-		
-
-		}
-
-	
 
 
 
