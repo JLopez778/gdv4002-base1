@@ -3,18 +3,26 @@
 #include "keys.h"
 #include "player.h"
 #include "asteroid.h"
+#include "GameObject2D.h"
+
+#include "Bullets.h"
 
 // Function prototypes
 void myUpdate(GLFWwindow* window, double tDelta);
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
+void deleteBullets(GLFWwindow* window, double tDelta);
+
 
 
 using namespace std;
 GameObject2D* player1;
 
 bitset<5> keys{ 0x0 };
-
+//global variables
 glm::vec2 gravity = glm::vec2(0.0f, -1.0f);
+
+
+
 
 int main(void) {
 
@@ -28,26 +36,28 @@ int main(void) {
 		return initResult; // exit if setup failed
 	}
 
+	
+	
 	//
 	// Setup game scene objects here
 	//
 
 	const float pi = 3.141593;
 
+	/*addObject("asteroid");
 	addObject("asteroid");
-	addObject("asteroid");
-	addObject("asteroid");
+	addObject("asteroid");*/
 	float playerVelocity = 2.0f;
 	GLuint playerTexture = loadTexture("Resources\\Textures\\player1_ship.png");
 
 	player* Player = new player(glm::vec2(-1.5f, 0.0f), 0.0f, glm::vec2(0.5f, 0.5f), playerTexture, 1.0f);
 
-	addObject("player", Player);
+	addObject("player1", Player);
 
 
-	GLuint asteroidTexture = loadTexture("Resources\\Textures\\asteroid.png");
+	GLuint asteroidTexture = loadTexture("Resources\\Textures\\asteroid.jpg");
 
-	asteroid* asteroid1 = new asteroid(glm::vec2(0.0f, 0.0f), 0.0f, glm::vec2(0.5f, 0.5f), asteroidTexture, 0.0f, glm::radians(45.0f));
+	asteroid* asteroid1 = new asteroid(glm::vec2(0.0f, 0.0f), 0.0f, glm::vec2(0.5f, 0.8f), asteroidTexture, 0.0f, glm::radians(45.0f));
 	asteroid* asteroid2 = new asteroid(glm::vec2(0.0f, 0.0f), 0.0f, glm::vec2(0.5f, 0.5f), asteroidTexture, 0.0f, glm::radians(60.0f));
 	asteroid* asteroid3 = new asteroid(glm::vec2(0.0f, 0.0f), 0.0f, glm::vec2(0.5f, 0.5f), asteroidTexture, 0.0f, glm::radians(90.0f));
 
@@ -58,6 +68,8 @@ int main(void) {
 
 
 
+	
+	
 
 
 	setUpdateFunction(myUpdate);
@@ -65,7 +77,7 @@ int main(void) {
 	listGameObjectKeys();
 	listObjectCounts();
 
-
+	setUpdateFunction(deleteBullets, false);
 
 	// Enter main loop - this handles update and render calls
 	engineMainLoop();
@@ -78,6 +90,34 @@ int main(void) {
 }
 
 
+
+
+
+
+void deleteBullets(GLFWwindow* window, double tDelta) {
+	GameObjectCollection bullets = getObjectCollection("Bullet");
+
+	for (int i = 0; i < bullets.objectCount; i++) {
+		if (bullets.objectArray[i]->position.y < -getViewplaneHeight() / 2.0f) {
+			deleteObject(bullets.objectArray[i]);
+		}
+		else if (bullets.objectArray[i]->position.y > getViewplaneHeight() / 2.0f) {
+			deleteObjects(bullets.objectArray[i]);
+
+		}
+	}
+}
+
+
+void asteroid_delete() {
+
+	
+
+}
+
+
+
+
 float asteroidPhase[] = { 0.0f, 0.0f, 0.0f };
 float asteroidPhaseVelocity[] = { glm::radians(90.0f), glm::radians(90.0f), glm::radians(90.0f) };
 
@@ -85,8 +125,8 @@ void myUpdate(GLFWwindow* window, double tDelta) {
 
 	static float playerSpeed = 1.0f; // distance per second
 
-	GameObject2D* player = getObject("player1");
-
+	GameObject2D* player = getObject("player");
+	player->update(tDelta);
 
 
 
@@ -105,7 +145,79 @@ void myUpdate(GLFWwindow* window, double tDelta) {
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
 
+	// Check if the key was just pressed
+	if (action == GLFW_PRESS) {
+		switch (key) {
+		case GLFW_KEY_ESCAPE:
+			glfwSetWindowShouldClose(window, true);
+			break;
+
+		case GLFW_KEY_W:
+			keys[key::W] = true;
+			break;
+
+		case GLFW_KEY_A:
+			keys[key::A] = true;
+			break;
+
+		case GLFW_KEY_S:
+			keys[key::S] = true;
+			break;
+
+		case GLFW_KEY_D:
+			keys[key::D] = true;
+			break;
+
+		case GLFW_KEY_SPACE:
+			keys[key::Space] = true;
+			{
+				GameObject2D* player1 = getObject("player1"); 
+				player1->orientation = (0.0f, 0.0f);
+				Bullet* bullet1 = new Bullet(glm::vec2(-1.5f, 0.0f), 0.0f, glm::vec2(0.5f, 0.5f), bulletTexture, 1.0f, glm::cosin:orientation);
+				addObject("Bullet", bullet1);
+
+				
+			}
+			
+			
+			
+			break;
+
+		
+			break;
+		}
+
+		
+	}
+
+
+
+
+
+	// If not pressed, check the key has just been released
+	else if (action == GLFW_RELEASE) {
+
+		switch (key) {
+		case GLFW_KEY_A:
+			keys[key::A] = false;
+		case GLFW_KEY_W:
+			keys[key::W] = false;
+			break;
+
+		case GLFW_KEY_S:
+			keys[key::S] = false;
+			break;
+
+		case GLFW_KEY_D:
+			keys[key::D] = false;
+			break;
+		}
+
+	}
+
+	
 }
+
 
 
 

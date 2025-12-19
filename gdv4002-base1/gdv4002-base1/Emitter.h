@@ -3,7 +3,7 @@
 #include "GameObject2D.h"
 #include <random>
 using namespace std;
-class Emitter
+class Emitter : public GameObject2D
 {
 private:
 	float emitTimeInterval;
@@ -11,7 +11,7 @@ private:
 
 	unsigned long long particleNumber;
 
-	GLuint particles[8];
+	GLuint particleTexture[8];
 
 	mt19937 gen;
 
@@ -22,8 +22,8 @@ private:
 public:
 
 	Emitter(glm::vec2 initPosition, glm::vec2 initSize, float emitTimeInterval);
-
-
+	void update(double tDelta) override;
+	void render() override;
 
 };
 
